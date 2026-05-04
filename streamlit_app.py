@@ -50,6 +50,6 @@ elif page == "연락처":
     st.subheader("📧 연락처")
     col1, col2 = st.columns(2)
     with col1:
-        st.write("**이메일:**9senro4i@sookmyung.ac.kr")
-        st.write("**전화:** 010-3092-8991")
+        st.write("**이메일:**xxxxx@sookmyung.ac.kr")
+        st.write("**전화:** 010-xxxx-xxxx")
 
