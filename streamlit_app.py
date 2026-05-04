@@ -1,9 +1,24 @@
+import os
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
 import seaborn as sns
 import plotly.graph_objects as go
 import plotly.express as px
+
+# 한글 폰트 설정
+font_path = os.path.join(os.path.dirname(__file__), "fonts", "NanumGothic-Bold.ttf")
+if os.path.exists(font_path):
+    fm.fontManager.addfont(font_path)
+    font_prop = fm.FontProperties(fname=font_path)
+    plt.rcParams["font.family"] = font_prop.get_name()
+    plt.rcParams["font.sans-serif"] = [font_prop.get_name()]
+    plt.rcParams["axes.unicode_minus"] = False
+    plotly_font = f"{font_prop.get_name()}, 'Noto Sans KR', sans-serif"
+else:
+    st.warning("폰트 파일 fonts/NanumGothic-Bold.ttf를 찾을 수 없습니다. 한글이 정상적으로 표시되지 않을 수 있습니다.")
+    plotly_font = "'Malgun Gothic', 'Noto Sans KR', sans-serif"
 
 # 페이지 설정
 st.set_page_config(page_title="데이터 시각화", layout="wide")
@@ -53,6 +68,7 @@ with tab2:
         color_discrete_sequence=px.colors.qualitative.Set3
     )
     fig.update_traces(textposition="inside", textinfo="percent+label")
+    fig.update_layout(font=dict(family=plotly_font))
     st.plotly_chart(fig, use_container_width=True)
 
 # Tab 3: 학습 진행도 (Plotly)
@@ -86,7 +102,8 @@ with tab3:
         yaxis_title="학습 진행도 (%)",
         yaxis2=dict(title="프로젝트 수", overlaying="y", side="right"),
         hovermode="x unified",
-        height=400
+        height=400,
+        font=dict(family=plotly_font)
     )
     
     st.plotly_chart(fig, use_container_width=True)
