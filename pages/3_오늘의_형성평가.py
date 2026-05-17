@@ -14,18 +14,18 @@ st.write("---")
 st.markdown("### 📝 [원리 적용] 도전! 실생활 2×2 행렬 곱셈 계산하기")
 st.write("이제 조건에 맞는 정상적인 **2×2 행렬과 2×2 행렬의 곱셈**을 실생활에 적용해 봅시다. 철수와 지수가 간식을 주문하려고 하는데, 집 앞 **[A분식]과 [B분식]의 가격을 비교**하여 총 금액 행렬을 구해봅시다.")
 
-# 상황 조건 제시
+# 상황 조건 제시 (여기서 $ 기호 오류가 자주 발생하므로 완전히 제거)
 st.info("""
 **📌 주문 및 가격 상황 (2×2 행렬 구조)**
-* **수량 행렬 $X$** : 철수와 지수(2명)가 각각 [떡볶이, 튀김]을 주문한 수량
-* **가격 행렬 $Y$** : [A분식, B분식] 두 가게의 [떡볶이, 튀김] 메뉴별 단가표
+* **수량 행렬 X** : 철수와 지수(2명)가 각각 [떡볶이, 튀김]을 주문한 수량
+* **가격 행렬 Y** : [A분식, B분식] 두 가게의 [떡볶이, 튀김] 메뉴별 단가표
 """)
 
 # 문제 행렬의 시각화 (2x2 × 2x2 구조 강조)
 col_q1, col_q2 = st.columns(2)
 
 with col_q1:
-    st.markdown("<center><b>🛍️ 앞 행렬: 수량 행렬 $X$ (사람 × 메뉴)</b></center>", unsafe_allow_html=True)
+    st.markdown("<center><b>🛍️ 앞 행렬: 수량 행렬 X (사람 × 메뉴)</b></center>", unsafe_allow_html=True)
     st.write(r"""
     $$
     X = \begin{pmatrix} 
@@ -40,7 +40,7 @@ with col_q1:
     """)
 
 with col_q2:
-    st.markdown("<center><b>💰 뒤 행렬: 가격 행렬 $Y$ (메뉴 × 가게)</b></center>", unsafe_allow_html=True)
+    st.markdown("<center><b>💰 뒤 행렬: 가격 행렬 Y (메뉴 × 가게)</b></center>", unsafe_allow_html=True)
     st.write(r"""
     $$
     Y = \begin{pmatrix} 
@@ -79,7 +79,8 @@ if st.button("🔮 정답 및 행렬 연산 풀이 보기", type="primary"):
     else:
         st.error(f"❌ 값이 조금 다르네요! 철수의 주문(1행)과 A분식의 가격(1열)을 다시 차근차근 매칭해 볼까요?")
     
-    st.markdown("#### 🧮 전체 결과 행렬 $XY$ 도출 과정 (2×2)")
+    # 마크다운 텍스트 영역의 $ 기호를 일반 알파벳으로 수정
+    st.markdown("#### 🧮 전체 결과 행렬 XY 도출 과정 (2×2)")
     st.write(r"""
     $$
     XY = \begin{pmatrix} 
