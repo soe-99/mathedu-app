@@ -1,11 +1,24 @@
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
+import os
 
 # =========================================================================
-# 1. 페이지 레이아웃 및 Matplotlib 마이너스 기호 설정
+# 1. 페이지 레이아웃 및 Matplotlib 나눔고딕 폰트 강제 설정
 # =========================================================================
 st.set_page_config(layout="wide", page_title="공통수학1 - 행렬의 곱셈과 교환법칙")
+
+# --- 다운로드받은 나눔고딕 폰트 파일 적용 로직 ---
+font_path = "NanumGothic.ttf"  # 코드와 같은 폴더에 폰트 파일이 있어야 합니다.
+
+if os.path.exists(font_path):
+    # 폰트 속성 정의 및 추가
+    font_prop = fm.FontProperties(fname=font_path)
+    plt.rc('font', family=font_prop.get_name())
+else:
+    # 폰트 파일이 없을 때를 대비한 시스템 폰트 백업
+    plt.rc('font', family='Malgun Gothic')
 
 # 마이너스 기호 깨짐 방지
 plt.rc('axes', unicode_minus=False)
