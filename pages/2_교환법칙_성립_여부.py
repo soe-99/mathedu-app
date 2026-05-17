@@ -1,34 +1,21 @@
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.font_manager as fm
-import os
 
 # =========================================================================
-# 1. 페이지 레이아웃 및 Matplotlib 나눔고딕 폰트 강제 설정
+# 1. 페이지 레이아웃 및 Matplotlib 설정
 # =========================================================================
 st.set_page_config(layout="wide", page_title="공통수학1 - 행렬의 곱셈과 교환법칙")
 
-# --- 다운로드받은 나눔고딕 폰트 파일 적용 로직 ---
-font_path = "NanumGothic.ttf"  # 코드와 같은 폴더에 폰트 파일이 있어야 합니다.
-
-if os.path.exists(font_path):
-    # 폰트 속성 정의 및 추가
-    font_prop = fm.FontProperties(fname=font_path)
-    plt.rc('font', family=font_prop.get_name())
-else:
-    # 폰트 파일이 없을 때를 대비한 시스템 폰트 백업
-    plt.rc('font', family='Malgun Gothic')
-
-# 마이너스 기호 깨짐 방지
+# 마이너스 기호 깨짐 방지 (영문 폰트 기본 매칭으로 한글 폰트 에러 원천 차단)
 plt.rc('axes', unicode_minus=False)
 
 # =========================================================================
-# 2. 메인 타이틀 및 설명
+# 2. 메인 타이틀 및 개요
 # =========================================================================
-st.title("⚔️ 2. 행렬의 곱셈과 교환법칙 ($AB$ vs $BA$)")
+st.title("📐 2. 행렬의 곱셈과 교환법칙 ($AB$ vs $BA$)")
 st.write("---")
-st.write("행렬의 곱셈은 도형을 움직이는 **'연속 마법'**입니다. 순서를 바꾸면 결과가 어떻게 달라지는지 눈으로 확인해 보세요!")
+st.write("행렬의 곱셈은 기하학적으로 도형을 변환시키는 연속적인 사상(Mapping)입니다. 두 선형변환의 합성 순서를 바꿨을 때 결과가 어떻게 달라지는지 확인해 보세요.")
 
 # 가로 1, 세로 2 크기의 직사각형 정의 (꼭짓점 5개로 닫힌 경로)
 rect_points = np.array([
@@ -36,42 +23,42 @@ rect_points = np.array([
 ]).T  # Shape: (2, 5)
 
 # 변환 행렬 정의
-B = np.array([[0, -1], [1, 0]])  # 90도 회전변환 행렬
-A = np.array([[2, 0], [0, 1]])   # X축 2배 확대변환 행렬
+B = np.array([[0, -1], [1, 0]])  # 원점 기준 90도 회전변환 행렬
+A = np.array([[2, 0], [0, 1]])   # x축 방향 2배 확대변환 행렬
 
-# 마법 정보 안내 상자
+# 변환 행렬 정보 정의
 st.info("""
-### 🔮 이번 실험에 사용할 두 가지 행렬 마법
-* **확대 마법 $A$** : $\\begin{pmatrix} 2 & 0 \\\\ 0 & 1 \\end{pmatrix}$ ➔ **X축 방향(가로)으로 도형을 2배 늘리는 마법**
-* **회전 마법 $B$** : $\\begin{pmatrix} 0 & -1 \\\\ 1 & 0 \\end{pmatrix}$ ➔ **도형을 원점 기준으로 반시계 방향 90도 회전시키는 마법**
+### 📊 실험에 사용될 선형변환 행렬 정의
+* **확대변환 행렬 $A$** : $\\begin{pmatrix} 2 & 0 \\\\ 0 & 1 \\end{pmatrix}$ ➔ **$x$축 방향으로 도형을 2배 확대하는 변환**
+* **회전변환 행렬 $B$** : $\\begin{pmatrix} 0 & -1 \\\\ 1 & 0 \\end{pmatrix}$ ➔ **원점을 기준으로 반시계 방향으로 90도 회전하는 변환**
 """)
 st.write("")
 
 # =========================================================================
-# 3. 두 가지 순서 비교 (시각화 및 연산)
+# 3. 합성 순서에 따른 변환 비교 (시각화 및 연산)
 # =========================================================================
 col1, col2 = st.columns(2)
 
 with col1:
     st.markdown("### 🟦 순서 1: $AB$")
-    st.caption("💡 [회전 마법 $B$]로 먼저 회전한 후, 그 결과를 [확대 마법 $A$]로 늘리기")
+    st.caption("💡 $B$를 먼저 적용하여 회전변환을 수행한 후, 그 결과에 $A$를 적용하여 확대변환을 수행")
     
-    run_ab = st.button("🔮 AB 계산하기", type="primary")
+    run_ab = st.button("연산 및 시각화 (AB)", type="primary")
     
     fig, ax = plt.subplots(figsize=(5, 5))
     
-    # 1. 원래 직사각형 형태를 명확하게 시각화 (회색 채우기 + 실선)
+    # 1. 초기 도형 시각화 (영문 label 사용으로 한글 깨짐 방지)
     ax.fill(rect_points[0], rect_points[1], color='#E0E0E0', alpha=0.5)
-    ax.plot(rect_points[0], rect_points[1], '#555555', linewidth=2, linestyle='-', label='Original (가로1, 세로2)')
+    ax.plot(rect_points[0], rect_points[1], '#555555', linewidth=2, linestyle='-', label='Original')
     
     if run_ab:
-        # 1단계: 회전 마법(B)만 먼저 적용한 중간 형태
+        # 1단계: 회전변환(B) 적용
         pts_step1 = B @ rect_points
-        ax.plot(pts_step1[0], pts_step1[1], color='#FFA500', linewidth=2, linestyle='--', label='1단계: 회전(B) 완료')
+        ax.plot(pts_step1[0], pts_step1[1], color='#FFA500', linewidth=2, linestyle='--', label='Step 1: B (Rotation)')
         
-        # 2단계: 그 결과에 확대 마법(A)까지 최종 적용
+        # 2단계: 확대변환(A) 합성
         pts_final = A @ pts_step1
-        ax.plot(pts_final[0], pts_final[1], 'blue', linewidth=3, marker='o', label='2단계: 최종 확대(AB)')
+        ax.plot(pts_final[0], pts_final[1], 'blue', linewidth=3, marker='o', label='Step 2: AB (Composite)')
         
     # 그래프 격자 및 축 설정
     ax.grid(True, linestyle=':', alpha=0.6)
@@ -82,6 +69,9 @@ with col1:
     ax.set_aspect('equal')
     ax.legend(loc='upper right', fontsize='small')
     st.pyplot(fig)
+    
+    # 그래프 하단 한글 텍스트 가이드
+    st.markdown("📌 **도형 변환 단계:** 초기 도형(가로1, 세로2) " + ("➔ 주황색 점선(회전변환 완료) ➔ **파란색 실선(최종 합성변환 $AB$)**" if run_ab else ""))
     
     if run_ab:
         st.success("**[대수적 계산 결과]**")
@@ -89,24 +79,24 @@ with col1:
         
 with col2:
     st.markdown("### 🟩 순서 2: $BA$")
-    st.caption("💡 [확대 마법 $A$]로 먼저 늘린 후, 그 결과를 [회전 마법 $B$]로 회전하기")
+    st.caption("💡 $A$를 먼저 적용하여 확대변환을 수행한 후, 그 결과에 $B$를 적용하여 회전변환을 수행")
     
-    run_ba = st.button("🔮 BA 계산하기")
+    run_ba = st.button("연산 및 시각화 (BA)")
     
     fig, ax = plt.subplots(figsize=(5, 5))
     
-    # 1. 원래 직사각형 형태를 명확하게 시각화 (회색 채우기 + 실선)
+    # 1. 초기 도형 시각화
     ax.fill(rect_points[0], rect_points[1], color='#E0E0E0', alpha=0.5)
-    ax.plot(rect_points[0], rect_points[1], '#555555', linewidth=2, linestyle='-', label='Original (가로1, 세로2)')
+    ax.plot(rect_points[0], rect_points[1], '#555555', linewidth=2, linestyle='-', label='Original')
     
     if run_ba:
-        # 1단계: 확대 마법(A)만 먼저 적용한 중간 형태
+        # 1단계: 확대변환(A) 적용
         pts_step1 = A @ rect_points
-        ax.plot(pts_step1[0], pts_step1[1], color='#17A2B8', linewidth=2, linestyle='--', label='1단계: 확대(A) 완료')
+        ax.plot(pts_step1[0], pts_step1[1], color='#17A2B8', linewidth=2, linestyle='--', label='Step 1: A (Scaling)')
         
-        # 2단계: 그 결과에 회전 마법(B)까지 최종 적용
+        # 2단계: 회전변환(B) 합성
         pts_final = B @ pts_step1
-        ax.plot(pts_final[0], pts_final[1], 'green', linewidth=3, marker='o', label='2단계: 최종 회전(BA)')
+        ax.plot(pts_final[0], pts_final[1], 'green', linewidth=3, marker='o', label='Step 2: BA (Composite)')
         
     # 그래프 격자 및 축 설정
     ax.grid(True, linestyle=':', alpha=0.6)
@@ -117,6 +107,9 @@ with col2:
     ax.set_aspect('equal')
     ax.legend(loc='upper right', fontsize='small')
     st.pyplot(fig)
+    
+    # 그래프 하단 한글 텍스트 가이드
+    st.markdown("📌 **도형 변환 단계:** 초기 도형(가로1, 세로2) " + ("➔ 하늘색 점선(확대변환 완료) ➔ **초록색 실선(최종 합성변환 $BA$)**" if run_ba else ""))
     
     if run_ba:
         st.success("**[대수적 계산 결과]**")
@@ -126,4 +119,4 @@ with col2:
 # 4. 결론 출력
 # =========================================================================
 st.write("---")
-st.error("### 📢 최종 결론: 두 도형의 최종 위치와 모양이 다릅니다! 즉, $AB \\neq BA$ (교환법칙 불성립)")
+st.error("### 📢 최종 결론: 두 사상의 최종 위치와 기하학적 형태가 다릅니다. 즉, 일반적인 행렬의 곱셈에서 교환법칙은 성립하지 않습니다. ($AB \\neq BA$)")
